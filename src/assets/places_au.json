@@ -19,8 +19,6 @@
 { "type": "Feature", "properties": { "scalerank": 2, "name": "Port Lincoln", "latitude": -34.733243, "longitude": 135.866580 }, "geometry": { "type": "Point", "coordinates": [ 135.866579955183738, -34.733242982218883 ] } },
 { "type": "Feature", "properties": { "scalerank": 2, "name": "Whyalla", "latitude": -33.025027, "longitude": 137.561412 }, "geometry": { "type": "Point", "coordinates": [ 137.561411905060368, -33.025026836378743 ] } },
 { "type": "Feature", "properties": { "scalerank": 2, "name": "Portland", "latitude": -38.340000, "longitude": 141.590003 }, "geometry": { "type": "Point", "coordinates": [ 141.590003213670002, -38.33999957403023 ] } },
-{ "type": "Feature", "properties": { "scalerank": 2, "name": "Bendigo", "latitude": -36.759993, "longitude": 144.280020 }, "geometry": { "type": "Point", "coordinates": [ 144.280019896623457, -36.759992656706117 ] } },
-{ "type": "Feature", "properties": { "scalerank": 2, "name": "Wangaratta", "latitude": -36.360017, "longitude": 146.300000 }, "geometry": { "type": "Point", "coordinates": [ 146.299999958480498, -36.360017070767071 ] } },
 { "type": "Feature", "properties": { "scalerank": 2, "name": "Windorah", "latitude": -25.433242, "longitude": 142.650197 }, "geometry": { "type": "Point", "coordinates": [ 142.650196898570016, -25.433242168379593 ] } },
 { "type": "Feature", "properties": { "scalerank": 2, "name": "Mount Isa", "latitude": -20.723866, "longitude": 139.490028 }, "geometry": { "type": "Point", "coordinates": [ 139.490028034625198, -20.723865540756549 ] } },
 { "type": "Feature", "properties": { "scalerank": 2, "name": "Rockhampton", "latitude": -23.363911, "longitude": 150.520001 }, "geometry": { "type": "Point", "coordinates": [ 150.520000772299682, -23.363911113683855 ] } },
@@ -34,5 +32,7 @@
 { "type": "Feature", "properties": { "scalerank": 0, "name": "Brisbane", "latitude": -27.455031, "longitude": 153.035093 }, "geometry": { "type": "Point", "coordinates": [ 153.033146873332043, -27.453085046753756 ] } },
 { "type": "Feature", "properties": { "scalerank": 0, "name": "Hobart", "latitude": -42.850009, "longitude": 147.295030 }, "geometry": { "type": "Point", "coordinates": [ 147.295029662260731, -42.850008525871147 ] } },
 { "type": "Feature", "properties": { "scalerank": 0, "name": "Perth", "latitude": -31.955015, "longitude": 115.839999 }, "geometry": { "type": "Point", "coordinates": [ 115.838052879042721, -31.953068770730169 ] } },
-{ "type": "Feature", "properties": { "scalerank": 0, "name": "Melbourne", "latitude": -37.820031, "longitude": 144.975016 }, "geometry": { "type": "Point", "coordinates": [ 144.973070375904058, -37.818085453696312 ] } }]
+{ "type": "Feature", "properties": { "scalerank": 0, "name": "Melbourne", "latitude": -37.820031, "longitude": 144.975016 }, "geometry": { "type": "Point", "coordinates": [ 144.973070375904058, -37.818085453696312 ] } },
+{ "type": "Feature", "properties": { "scalerank": 0, "name": "Sydney", "latitude": -33.920011, "longitude": 151.185180 }, "geometry": { "type": "Point", "coordinates": [ 151.183233950147496, -33.918065108628753 ] } }
+]
 }
