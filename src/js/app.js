@@ -150,13 +150,15 @@ function init(dataFeed, lga, places, trend) {
 			return "Decreasing"
 		}
 
-		else if (slope == "") {
+		else if (slope == 0) {
+			return "No change"
+		}
+
+		else if (slope === "") {
 			return "Not enough cases"
 		}
 
-		else if (slope == 0) {
-			return "Not change"
-		}
+		
 	}
 
 	var svg = container.append("svg")	
@@ -259,12 +261,13 @@ function init(dataFeed, lga, places, trend) {
 	        	}
 
 	        	else {
-	        		if (d.properties.change != "") {
-						return divColors(d.properties.change)
+	        		if (d.properties.change === "") {
+						return "#eaeaea"
 					}
 
 		        	else {
-		        		return "#eaeaea"
+		        		return divColors(d.properties.change)
+		        		
 		        	}
 	        	}
 	 
@@ -314,11 +317,12 @@ function init(dataFeed, lga, places, trend) {
 		})
 		.attr("cy",d => d.centroid[1])
 		.attr("fill", d => { 
-			if (d.change != "") {
-				return divColors(d.change)
+			if (d.change === "") {
+				return "none"
 			}
 			else {
-				return "none"
+				
+				return divColors(d.change)
 			}
 		})
 		.attr("r", function(d) { 
@@ -475,12 +479,13 @@ function init(dataFeed, lga, places, trend) {
     	if (circlesOn) {
     		features.selectAll(".mapCircle").style("visibility", "hidden")
     		features.selectAll(".lga").attr("fill", d=> {
-    			if (d.properties.change != "") {
-						return divColors(d.properties.change)
+    			if (d.properties.change === "") {
+						return "#eaeaea"
 					}
 
 		        	else {
-		        		return "#eaeaea"
+		        		
+		        		return divColors(d.properties.change)
 		        	}
     		})
     			
@@ -503,7 +508,7 @@ function init(dataFeed, lga, places, trend) {
             var mouseX = d3.mouse(this)[0]
             var mouseY = d3.mouse(this)[1]
             var half = width / 2;
-            
+            console.log(mouseX, mouseY)
             if (mouseX < half) {
                 d3.select("#tooltip").style("left", mouseX + "px");
                 
