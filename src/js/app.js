@@ -8,8 +8,8 @@ var maps = [{
 	"active" : false
 },{
 	"label" : "Sydney",
-	"centre" : [151,-33.8],
-	"zoom" : 40,
+	"centre" : [151,-34],
+	"zoom" : 35,
 	"active" : true
 }]
 
@@ -25,7 +25,8 @@ function cleanNames(name) {
 }
 
 function init(dataFeed, lga, places, trend) {
-	console.log(trend)
+	console.log("dataFeed",dataFeed)
+	var context = d3.select(".nswMap")
 	const container = d3.select("#nswCoronaMapContainer")
 	var isMobile;
 	var windowWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -44,8 +45,10 @@ function init(dataFeed, lga, places, trend) {
 	var height = width*0.7
 	
 	if (windowHeight > windowWidth) {
-		height = width*1.3
+		height = width*0.9
 	}
+
+	console.log("lga",lga)
 
 	var ratio = (maps[0].active) ? maps[0].zoom : maps[1].zoom
 
@@ -63,11 +66,13 @@ function init(dataFeed, lga, places, trend) {
 	var extent = d3.extent(dataFeed, d => +d.count)
 
 	// console.log(extent)
-	var lastUpdated = dataFeed[0].date
+	var lastUpdated = dataFeed[0].today
 
-	d3.select("#lastUpdated").text(lastUpdated)
+	context.select("#lastUpdated").text(lastUpdated)
 
-	extent = [1,30]
+	var max = d3.max(dataFeed, d => d.count)
+
+	extent = [1,max]
 
 	// trend.forEach( d => {
 	// 	d.lga = cleanNames(d.lga)
@@ -79,7 +84,6 @@ function init(dataFeed, lga, places, trend) {
 	console.log("trend",mapData)
 
 	lga.objects['nsw-lga-2019'].geometries.forEach(function(d) {
-		console.log(d.properties)
 		// var entry = mapData.get(d.properties.LGA_NAME19)
 		// console.log(entry['Cases'])
 		if (mapData.has(d.properties.LGA_NAME19)) {
@@ -121,9 +125,23 @@ function init(dataFeed, lga, places, trend) {
 			d.properties.this_week = 0
 			d.properties.last_week = 0
 		}
+
+
 	})
 
-	// console.log(data)
+	var lockdownAreas = ["Fairfield (C)", 
+						"Liverpool (C)", 
+						"Canterbury-Bankstown (A)", 
+						"Blacktown (C)",
+						"Cumberland (A)",
+						"Parramatta (C)",
+						"Georges River (A)",
+						"Campbelltown (C) (NSW)",
+						"Bayside (A)",
+						"Burwood (A)",
+						"Strathfield (A)",
+						"Penrith (C)"]
+
 
 	// var extent = d3.extent(vic.objects['vic-lga-2019'].geometries, d => { 
 	// 	if (d.properties.casesPer100K > 0) {
@@ -190,7 +208,7 @@ function init(dataFeed, lga, places, trend) {
 	    .attr("width",1)
 	    .attr("height",8)
 	    .attr("transform", "translate(0,0)")
-	    .attr("fill", "#000")
+	    .attr("fill", "#767676")
 
 
 
@@ -220,8 +238,13 @@ function init(dataFeed, lga, places, trend) {
 	var path = d3.geoPath()
 	    .projection(projection);
 
-	var geo = topojson.feature(lga,lga.objects['nsw-lga-2019']).features    
+	var geo = topojson.feature(lga,lga.objects['nsw-lga-2019']).features   
 
+	console.log("geo",geo)
+
+	var lockdownLgas = geo.filter(d => lockdownAreas.includes(d.properties.LGA_NAME19))
+
+	console.log("lockdownLgas", lockdownLgas)
 	// console.log("postcodeGeo", postcodeGeoLockdown)
 
 	var centroids = geo.map(function (feature){
@@ -245,8 +268,6 @@ function init(dataFeed, lga, places, trend) {
 		.range([2, rMax])
 
 	radius.domain(extent)
-
-	console.log("centroids",centroids)
 
 	features.append("g")
 	    .selectAll("path")
@@ -280,17 +301,17 @@ function init(dataFeed, lga, places, trend) {
 	          
 	          
 
-	// features.append("g")
-	//     .selectAll("path")
-	//     .attr("id","metro-lockdown")
-	//     .data(topojson.feature(metro,metro.objects.metro).features)
-	//     .enter().append("path")
-	//         // .attr("class", "diagonal-stripe-1")
-	//         .attr("fill", "none")
-	//         .attr("stroke", "#000")
-	//         .style("stroke-dasharray", ("3, 2"))
-	//         .attr("stroke-width", "2px")
-	//         .attr("d", path);           
+	features.append("g")
+	    .selectAll("path")
+	    .attr("id","metro-lockdown")
+	    .data(lockdownLgas)
+	    .enter().append("path")
+	        .attr("fill", "url(#diagonalHatch)")
+	        .attr("stroke", "#767676")
+	        .style("pointer-events", "none")
+	        // .style("stroke-dasharray", ("3, 2"))
+	        .attr("stroke-width", "1px")
+	        .attr("d", path);           
         
 		 features.selectAll("text")
             .data(filterPlaces)
@@ -345,12 +366,12 @@ function init(dataFeed, lga, places, trend) {
 		})  
 
 
-   	d3.select("#keyDiv svg").remove();
+   	context.select("#keyDiv svg").remove();
 
    	var keyWidth = document.querySelector("#keyDiv").getBoundingClientRect().width
    	// console.log(keyWidth)
 
-    var keySvg = d3.select("#keyDiv").append("svg")	
+    var keySvg = context.select("#keyDiv").append("svg")	
 	                .attr("width", keyWidth)
 					.attr("height", 50)
 	                .attr("id", "key")
@@ -412,13 +433,13 @@ function init(dataFeed, lga, places, trend) {
         .text("← Cases decreasing")    
 
 
-    d3.select("#keyDiv2 svg").remove();
+    context.select("#keyDiv2 svg").remove();
 
     var keyWidth2 = document.querySelector("#keyDiv2").getBoundingClientRect().width
 
     var key2offset = 20
 
-    var keySvg2 = d3.select("#keyDiv2").append("svg")	
+    var keySvg2 = context.select("#keyDiv2").append("svg")	
 	                .attr("width", keyWidth2)
 					.attr("height", 80)
 	                .attr("id", "key2")
@@ -453,10 +474,65 @@ function init(dataFeed, lga, places, trend) {
             .text(extent[0]) 
 
 
+    context.select("#keyDiv3 svg").remove();        
 
-    d3.select("#togglePostcodes").on("click", function() {  
+    var keyWidth3 = document.querySelector("#keyDiv3").getBoundingClientRect().width
+
+    var keySvg3 = context.select("#keyDiv3").append("svg")	
+	                .attr("width", keyWidth3)
+					.attr("height", 80)
+	                .attr("id", "key3")
+	                .attr("overflow", "hidden");          
+
+		keySvg3.append("rect")
+            .attr("x",1)
+			.attr("y",10)
+   			.attr("width", 30)
+   			.attr("height", 30)
+   			.attr("fill", "url(#diagonalHatch)")
+	        .attr("stroke", "#767676")  	
+
+
+	// keySvg3.append("rect")
+ //            .attr("x",1)
+	// 		.attr("y",10)
+ //   			.attr("width", 30)
+ //   			.attr("height", 30)
+ //   			.attr("fill", "none")
+	//         .attr("stroke", "#000")
+	//         .attr("stroke-width", 2)
+	//         .attr('stroke-dasharray', '3,2')     
+
+
+	// keySvg3.append("text")
+ //            .attr("x",1)
+	// 		.attr("y",60)
+ //            .attr("class", "keyText keyLabel")
+ //            .text("Metro Melbourne")    
+
+ //     keySvg3.append("text")
+ //            .attr("x",1)
+	// 		.attr("y",75)
+ //            .attr("class", "keyText keyLabel")
+ //            .text("lockdown")                  
+        
+   	keySvg3.append("text")
+            .attr("x",0)
+			.attr("y",60)
+            .attr("class", "keyText keyLabel")
+            .text("LGA lockdowns")    
+
+   //   keySvg3.append("text")
+   //          .attr("x",0)
+			// .attr("y",75)
+   //          .attr("class", "keyText keyLabel")
+   //          .text("down postcodes")           
+
+
+
+    context.select("#togglePostcodes").on("click", function() {  
     
-    	var pc = d3.select("#postcodes")
+    	var pc = context.select("#postcodes")
 
     	console.log(postcodesVisible)
 
@@ -474,7 +550,7 @@ function init(dataFeed, lga, places, trend) {
     })      
 
 
-    d3.select("#toggleCircles").on("click", function() {  
+    context.select("#toggleCircles").on("click", function() {  
     
     	if (circlesOn) {
     		features.selectAll(".mapCircle").style("visibility", "hidden")
@@ -508,19 +584,18 @@ function init(dataFeed, lga, places, trend) {
             var mouseX = d3.mouse(this)[0]
             var mouseY = d3.mouse(this)[1]
             var half = width / 2;
-            console.log(mouseX, mouseY)
             if (mouseX < half) {
-                d3.select("#tooltip").style("left", mouseX + "px");
+                context.select("#tooltip").style("left", mouseX + "px");
                 
             } else if (mouseX >= half) {
-                d3.select("#tooltip").style("left", (mouseX - 200) + "px");
+                context.select("#tooltip").style("left", (mouseX - 200) + "px");
                 
             }
 
             if (mouseY < (height / 2)) {
-                d3.select("#tooltip").style("top", (mouseY + 30) + "px");
+                context.select("#tooltip").style("top", (mouseY + 30) + "px");
             } else if (mouseY >= (height / 2)) {
-                d3.select("#tooltip").style("top", (mouseY - 120) + "px");
+                context.select("#tooltip").style("top", (mouseY - 120) + "px");
             }
             
         }
@@ -531,26 +606,26 @@ function init(dataFeed, lga, places, trend) {
             var html
             if (d.properties.change != "") {
             	 html = `<b>${d.properties.LGA_NAME19}</b><br>
-            			Trend: ${trendLang(d.properties.change)}<br>
-            			Cases in past 7 days: ${d.properties.this_week}<br>
-            			Cases in previous 7 day period: ${d.properties.last_week}<br>
+            			Trend*: ${trendLang(d.properties.change)}<br>
+            			Total cases, past 7 days: ${d.properties.this_week}<br>
+            			Total cases, prev. 7 day period: ${d.properties.last_week}<br>
             			Total in past 30 days: ${d.properties.cases}<br>
             			`
             }
            
            	else {
            		 html = `<b>${d.properties.LGA_NAME19}</b><br>
-            			Trend: ${trendLang(d.properties.change)}<br>
+            			Trend*: ${trendLang(d.properties.change)}<br>
             			Total in past 30 days: ${d.properties.cases}<br>
             			`
            	}
 
-            d3.select(".tooltip").html(html).style("visibility", "visible");
+            context.select(".tooltip").html(html).style("visibility", "visible");
         
         }
 
     function tooltipOut(d) {
-        d3.select(".tooltip").style("visibility", "hidden");
+        context.select(".tooltip").style("visibility", "hidden");
     }            
 
 
@@ -566,7 +641,7 @@ Promise.all([
 		.then((results) =>  {
 			init(results[0], results[1], results[2], results[3])
 
-			d3.select("#zoom2").on("click", function() {
+			d3.select(".nswMap #zoom2").on("click", function() {
 
 				if (maps[0].active) {
 					maps[0].active = false;
