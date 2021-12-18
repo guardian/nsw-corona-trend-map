@@ -301,17 +301,17 @@ function init(dataFeed, lga, places, trend) {
 	          
 	          
 
-	features.append("g")
-	    .selectAll("path")
-	    .attr("id","metro-lockdown")
-	    .data(lockdownLgas)
-	    .enter().append("path")
-	        .attr("fill", "url(#diagonalHatch)")
-	        .attr("stroke", "#767676")
-	        .style("pointer-events", "none")
-	        // .style("stroke-dasharray", ("3, 2"))
-	        .attr("stroke-width", "1px")
-	        .attr("d", path);           
+	// features.append("g")
+	//     .selectAll("path")
+	//     .attr("id","metro-lockdown")
+	//     .data(lockdownLgas)
+	//     .enter().append("path")
+	//         .attr("fill", "url(#diagonalHatch)")
+	//         .attr("stroke", "#767676")
+	//         .style("pointer-events", "none")
+	//         // .style("stroke-dasharray", ("3, 2"))
+	//         .attr("stroke-width", "1px")
+	//         .attr("d", path);           
         
 		 features.selectAll("text")
             .data(filterPlaces)
